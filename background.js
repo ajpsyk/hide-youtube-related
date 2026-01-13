@@ -1,8 +1,8 @@
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
-  const pageRefreshOrURLChange = changeInfo.status === "complete" || changeInfo.url;
+  const isPageComplete = changeInfo.status === "complete";
   const isVideoPage = tab.url && tab.url.includes("youtube.com/watch")
-
-  if (pageRefreshOrURLChange && isVideoPage) {
+  
+  if (isPageComplete && isVideoPage) {
     chrome.tabs.sendMessage(tabId, { message: "TAB_UPDATE"});
   }
 });

@@ -10,8 +10,8 @@
     const newVideoLoaded = () => {
         let btn = document.querySelector(".hide-related-btn");
         if (!btn) {
-            const youtubeRelatedColumn = document.getElementById("secondary");
-            if (!youtubeRelatedColumn) {
+            const secondary = document.querySelector("ytd-watch-flexy #secondary");
+            if (!secondary) {
                 setTimeout(newVideoLoaded, 500);
                 return;
             }
@@ -38,11 +38,10 @@
                 related.hidden = data.btnIsHidden || false;
                 updateButtonIcon(related.hidden);
             });
+
+            secondary.prepend(hideRelatedBtn);
             
-            youtubeRelatedColumn.prepend(hideRelatedBtn);
             hideRelatedBtn.addEventListener("click", hideRelatedBtnEventHandler);
-        } else {
-            hideRelatedBtn = btn;
         }
     }
 
