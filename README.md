@@ -1,36 +1,32 @@
-Hide YouTube Related Column
-A lightweight Chrome Extension built with Manifest V3 that adds a native-feeling toggle button to the YouTube sidebar. It allows users to hide the "Related Videos" section for a distraction-free experience while keeping playlists visible.
+# Hide YouTube Related Column
 
-~Features~
-State Persistence: Remembers if you left the sidebar hidden or visible, even after refreshing the page.
+A lightweight Chrome Extension built with Manifest V3 that adds a native-feeling toggle button to the YouTube sidebar.
+It allows users to hide the "Related Videos" section for a distraction-free experience while keeping playlists visible.
 
-SPA Support: Works seamlessly with YouTube's "Single Page Application" navigation (no-refresh video switching).
+## Features
 
-Lightweight: Zero dependencies; uses native Chrome APIs.
+* **State Persistence**: Remembers if you left the sidebar hidden or visible, even after refreshing the page.
+* **SPA Support**: Works seamlessly with YouTube's "Single Page Application" navigation (no-refresh video switching).
+* **Lightweight**: Zero dependencies; uses native Chrome APIs.
 
-~Installation~
-Download or clone this repository to your computer.
+## Installation
 
-Open Google Chrome and navigate to chrome://extensions/.
+1. Download or clone this repository to your computer.
+2. Open Google Chrome and navigate to `chrome://extensions/`.
+3. Enable Developer mode using the toggle in the top right corner.
+4. Click Load unpacked in the top right and select the folder containing the extension files.
 
-Enable Developer mode using the toggle in the top right corner.
+## Project Structure
 
-Click Load unpacked in the top right and select the folder containing the extension files.
+* **manifest.json**: Extension configuration and permissions.
+* **background.js**: Monitors tab updates and URL changes to trigger the content script.
+* **contentScript.js**: Handles DOM injection, button logic, and theme styling.
+* **assets/**: Contains the visibility.svg and visibility_off.svg icons.
 
-~Project Structure~
-manifest.json: Extension configuration and permissions.
+## How it Work
 
-background.js: Monitors tab updates and URL changes to trigger the content script.
-
-contentScript.js: Handles DOM injection, button logic, and theme styling.
-
-assets/: Contains the visibility.svg and visibility_off.svg icons.
-
-~How it Work~
 The extension uses a service_worker to watch for chrome.tabs.onUpdated. When it detects a youtube.com/watch URL, it pings the content script. The content script then:
 
-Checks chrome.storage.local for the user's last preference.
-
-Injects a button into the #secondary column.
-
-Toggles the #related element visibility without affecting the #playlist element.
+1. Checks chrome.storage.local for the user's last preference.
+2. Injects a button into the #secondary column.
+3. Toggles the #related element visibility without affecting the #playlist element.
