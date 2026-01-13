@@ -1,2 +1,36 @@
-# hide-youtube-related
-A lightweight Chrome Extension built with Manifest V3 that adds a native-feeling toggle button to the YouTube sidebar. It allows users to hide the "Related Videos" section for a distraction-free experience.
+Hide YouTube Related Column
+A lightweight Chrome Extension built with Manifest V3 that adds a native-feeling toggle button to the YouTube sidebar. It allows users to hide the "Related Videos" section for a distraction-free experience while keeping playlists visible.
+
+~Features~
+State Persistence: Remembers if you left the sidebar hidden or visible, even after refreshing the page.
+
+SPA Support: Works seamlessly with YouTube's "Single Page Application" navigation (no-refresh video switching).
+
+Lightweight: Zero dependencies; uses native Chrome APIs.
+
+~Installation~
+Download or clone this repository to your computer.
+
+Open Google Chrome and navigate to chrome://extensions/.
+
+Enable Developer mode using the toggle in the top right corner.
+
+Click Load unpacked in the top right and select the folder containing the extension files.
+
+~Project Structure~
+manifest.json: Extension configuration and permissions.
+
+background.js: Monitors tab updates and URL changes to trigger the content script.
+
+contentScript.js: Handles DOM injection, button logic, and theme styling.
+
+assets/: Contains the visibility.svg and visibility_off.svg icons.
+
+~How it Work~
+The extension uses a service_worker to watch for chrome.tabs.onUpdated. When it detects a youtube.com/watch URL, it pings the content script. The content script then:
+
+Checks chrome.storage.local for the user's last preference.
+
+Injects a button into the #secondary column.
+
+Toggles the #related element visibility without affecting the #playlist element.
