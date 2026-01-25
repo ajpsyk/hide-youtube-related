@@ -14,7 +14,7 @@ It allows users to hide the "Related Videos" section for a distraction-free expe
 1. Download or clone this repository to your computer.
 2. Open Google Chrome and navigate to `chrome://extensions/`.
 3. Enable Developer mode using the toggle in the top right corner.
-4. Click Load unpacked in the top right and select the folder containing the extension files.
+4. Click Load unpacked in the top left of the extensions page and select the folder containing the extension files.
 
 ## Project Structure
 
