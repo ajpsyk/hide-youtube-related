@@ -6,7 +6,6 @@
     });
 
     const youtubePageLoaded = async () => {
-        console.log("Detected Loaded youtube page. Updating");
         await waitForElement("ytd-masthead #center");
         await waitForElement("ytd-watch-flexy #secondary");
 
@@ -16,7 +15,6 @@
     }
 
     const youtubePageActive = () => {
-        console.log("Detected Active youtube page. Updating");
         updatePageState();
     }
 
@@ -42,7 +40,6 @@
     };
 
     const createButton = () => {
-        console.log(`Creating button`);
         const buttonContainer = document.createElement("div");
         buttonContainer.id = "hide-related-button";
         buttonContainer.classList.add(
@@ -75,7 +72,6 @@
 
     const updatePageState = () => {
         chrome.storage.local.get("relatedHidden", (data) => {
-            console.log(`Fetching page state. Page state is ${data.relatedHidden}`)
             const relatedHidden = data.relatedHidden ?? false;
             updateRelated(relatedHidden);
         });
@@ -88,14 +84,12 @@
     const updateRelated = (relatedHidden) => {
         const related = document.getElementById("related");
         const isHidden = relatedHidden ?? !related.hidden;
-        console.log(`Updating related. Related is visible: ${!isHidden}`);
         related.hidden = isHidden;
         chrome.storage.local.set({"relatedHidden": isHidden});
         updateButtonIcon(isHidden);
     }
 
     const updateButtonIcon = (isHidden) => {
-        console.log(`Button is visibility on: ${!isHidden}`)
         const buttonImg = document.querySelector("#hide-related-button").querySelector("img");
         buttonImg.src = chrome.runtime.getURL(
             isHidden ? "assets/visibility_off.svg" : "assets/visibility.svg"
