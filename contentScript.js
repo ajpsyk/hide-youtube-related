@@ -1,23 +1,30 @@
 (() => {
 
     chrome.runtime.onMessage.addListener((obj) => {
-        if (obj.message === "YT_PAGE_LOADED") youtubePageLoaded(obj.url);
+        if (obj.message === "YT_PAGE_LOADED") youtubePageLoaded();
+        if (obj.message === "YT_PAGE_ACTIVE") youtubePageActive();
     });
 
-    const youtubePageLoaded = async (url) => {
-
+    const youtubePageLoaded = async () => {
+        console.log("Detected Loaded youtube page. Updating");
         await waitForElement("ytd-masthead #center");
         await waitForElement("ytd-watch-flexy #secondary");
 
         const buttonExists = document.querySelector("#hide-related-button");
-        !buttonExists ? createButton() : updatePageState();
-    
+        if (!buttonExists) createButton();
+        updatePageState();
+    }
+
+    const youtubePageActive = () => {
+        console.log("Detected Active youtube page. Updating");
+        updatePageState();
     }
 
     const waitForElement = (selector) => {
         return new Promise(resolve => {
             const el = document.querySelector(selector);
             if (el) return resolve();
+            console.log(`Waiting for ${selector}...`)
 
             const observer = new MutationObserver(() => {
                 const el = document.querySelector(selector);
@@ -35,8 +42,7 @@
     };
 
     const createButton = () => {
-        console.log("There is no button. Creating button...");
-        
+        console.log(`Creating button`);
         const buttonContainer = document.createElement("div");
         buttonContainer.id = "hide-related-button";
         buttonContainer.classList.add(
@@ -65,48 +71,35 @@
         const mastheadCenter = document.querySelector("ytd-masthead #center");
         mastheadCenter.appendChild(buttonContainer);
        
-        updatePageState();
     }
 
     const updatePageState = () => {
-        console.log(`Button is created. Getting page state.`);
-        chrome.storage.local.get("btnIsHidden", (data) => {
-            data.btnIsHidden === undefined ? console.log("Button state not set. Defaulting to visible state.") : console.log("Related is visible: ", !data.btnIsHidden);
-            const related = document.getElementById("related");
-            const isHidden = data.btnIsHidden || false;
-            related.hidden = isHidden;
-            chrome.storage.local.set({"btnIsHidden": isHidden});
-            updateButtonIcon(isHidden);
+        chrome.storage.local.get("relatedHidden", (data) => {
+            console.log(`Fetching page state. Page state is ${data.relatedHidden}`)
+            const relatedHidden = data.relatedHidden ?? false;
+            updateRelated(relatedHidden);
         });
     }
 
     const hideRelatedEventHandler = () => {
+        updateRelated();
+    }
+
+    const updateRelated = (relatedHidden) => {
         const related = document.getElementById("related");
-        const isHidden = !related.hidden;
-        console.log("Button Clicked!")
-
-        if (isHidden) {
-            console.log("Hiding related content.");
-        } else {
-            console.log("Showing related content")
-        }
-
+        const isHidden = relatedHidden ?? !related.hidden;
+        console.log(`Updating related. Related is visible: ${!isHidden}`);
         related.hidden = isHidden;
-        chrome.storage.local.set({"btnIsHidden": isHidden});
+        chrome.storage.local.set({"relatedHidden": isHidden});
         updateButtonIcon(isHidden);
     }
 
     const updateButtonIcon = (isHidden) => {
-        if (isHidden) {
-            console.log("Button using visibility off icon.");
-        } else {
-            console.log("Button using visibility on icon.")
-        }
+        console.log(`Button is visibility on: ${!isHidden}`)
         const buttonImg = document.querySelector("#hide-related-button").querySelector("img");
         buttonImg.src = chrome.runtime.getURL(
             isHidden ? "assets/visibility_off.svg" : "assets/visibility.svg"
         );
     }
 
-    chrome.runtime.sendMessage("SCRIPTS_LOADED");
 })();
