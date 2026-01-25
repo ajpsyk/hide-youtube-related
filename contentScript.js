@@ -22,7 +22,6 @@
         return new Promise(resolve => {
             const el = document.querySelector(selector);
             if (el) return resolve();
-            console.log(`Waiting for ${selector}...`)
 
             const observer = new MutationObserver(() => {
                 const el = document.querySelector(selector);
