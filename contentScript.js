@@ -85,6 +85,10 @@
         const isHidden = relatedHidden ?? !related.hidden;
         related.hidden = isHidden;
         chrome.storage.local.set({"relatedHidden": isHidden});
+
+        const playListHasItems = document.querySelector("#playlist").querySelector("#items").hasChildNodes();
+        if (!playListHasItems) document.querySelector("#secondary").hidden = isHidden;
+        
         updateButtonIcon(isHidden);
     }
 
