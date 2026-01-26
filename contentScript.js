@@ -45,7 +45,7 @@
             "style-scope", "ytd-masthead"
         );
         buttonContainer.style.marginLeft = "12px";
-        buttonContainer.addEventListener("click", hideRelatedEventHandler);
+        buttonContainer.addEventListener("click", buttonClickHandler);
 
         const button = document.createElement("button");
         button.classList.add(
@@ -59,6 +59,7 @@
         );
         button.ariaLabel = "Hide related content";
         button.ariaDisabled = "false";
+        button.title = "Hide related content";
         buttonContainer.appendChild(button);
 
         const img = document.createElement("img");
@@ -76,7 +77,7 @@
         });
     }
 
-    const hideRelatedEventHandler = () => {
+    const buttonClickHandler = () => {
         updateRelated();
     }
 
@@ -93,6 +94,9 @@
         buttonImg.src = chrome.runtime.getURL(
             isHidden ? "assets/visibility_off.svg" : "assets/visibility.svg"
         );
+
+        const isLightMode = !document.documentElement.hasAttribute("dark");
+        isLightMode ? buttonImg.style.filter = "invert(1)" : buttonImg.style.filter = "none";
     }
 
 })();
