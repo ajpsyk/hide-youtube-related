@@ -1,7 +1,18 @@
-// Todo: Fix error regarding content scripts not being loaded on already open tabs when extension is installed.
-chrome.tabs.onActivated.addListener(async (activeInfo) => {
-    const tab = await chrome.tabs.get(activeInfo.tabId);
-    if (tab.url?.includes("youtube.com")) chrome.tabs.sendMessage(tab.id, { message: "YT_PAGE_ACTIVE" });
+
+chrome.runtime.onInstalled.addListener(async () => {
+    const tabs = await chrome.tabs.query({
+      url: ["https://*.youtube.com/*"]
+    });
+
+    for (const tab of tabs) {
+        try {
+            await chrome.scripting.executeScript({
+                target: {tabId: tab.id},
+                files: ["cleanup.js", "contentScript.js"]
+            })
+            chrome.tabs.sendMessage(tab.id, { message: "YT_PAGE_LOADED" });
+        } catch (err) { console.error(`Failed to inject scripts into tab: ${tab.id}`); }
+    }
 });
 
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {

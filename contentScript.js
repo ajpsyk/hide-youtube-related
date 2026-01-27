@@ -2,36 +2,44 @@
 
     chrome.runtime.onMessage.addListener((obj) => {
         if (obj.message === "YT_PAGE_LOADED") youtubePageLoaded();
-        if (obj.message === "YT_PAGE_ACTIVE") youtubePageActive();
+    });
+
+    chrome.storage.onChanged.addListener(async (changes, namespace) => {
+        if (namespace === "local" && changes.relatedHidden) {
+            updateRelated(changes.relatedHidden.newValue, true);
+        }
     });
 
     const youtubePageLoaded = async () => {
-        await waitForElement("ytd-masthead #center");
-        await waitForElement("ytd-watch-flexy #secondary");
+
+        await waitForElements(["ytd-masthead #center","ytd-watch-flexy #secondary"]);
 
         const buttonExists = document.querySelector("#hide-related-button");
         if (!buttonExists) createButton();
+
         updatePageState();
     }
 
-    const youtubePageActive = () => {
-        updatePageState();
-    }
+    const waitForElements = async (selectors) => {
+        for (const selector of selectors) {
+            await waitForElement(selector);
+        }
+    };
 
     const waitForElement = (selector) => {
         return new Promise(resolve => {
             const el = document.querySelector(selector);
             if (el) return resolve();
 
-            const observer = new MutationObserver(() => {
+            window.hlc_element_observer = new MutationObserver(() => {
                 const el = document.querySelector(selector);
                 if (el) {
                     resolve();
-                    observer.disconnect(); 
+                    window.hlc_element_observer.disconnect(); 
                 }
             });
 
-            observer.observe(document.body, {
+            window.hlc_element_observer.observe(document.body, {
                 childList: true,
                 subtree: true
             });
@@ -73,22 +81,24 @@
     const updatePageState = () => {
         chrome.storage.local.get("relatedHidden", (data) => {
             const relatedHidden = data.relatedHidden ?? false;
-            updateRelated(relatedHidden);
+            updateRelated(relatedHidden, false);
         });
     }
 
     const buttonClickHandler = () => {
-        updateRelated();
+        updateRelated(null, false);
     }
 
-    const updateRelated = (relatedHidden) => {
+    const updateRelated = (relatedHidden, isSyncUpdate) => {
         const related = document.getElementById("related");
         const isHidden = relatedHidden ?? !related.hidden;
+        
+        if (!isSyncUpdate) chrome.storage.local.set({"relatedHidden": isHidden});
         related.hidden = isHidden;
-        chrome.storage.local.set({"relatedHidden": isHidden});
 
         const playListHasItems = document.querySelector("#playlist").querySelector("#items").hasChildNodes();
         if (!playListHasItems) document.querySelector("#secondary").hidden = isHidden;
+        
         
         updateButtonIcon(isHidden);
     }
