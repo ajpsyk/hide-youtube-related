@@ -1,7 +1,7 @@
 {
-    "name": "Hide Youtube Related",
-    "version": "0.1.0",
-    "description": "Button for hiding the youtube related column for a distraction-free experience.",
+    "name": "Hide Youtube Sidebar",
+    "version": "1.0.0",
+    "description": "Button for hiding the youtube sidebar column for a distraction-free experience.",
     "permissions": ["storage", "tabs", "scripting"],
     "host_permissions": ["https://*.youtube.com/*"],
     "background": {
