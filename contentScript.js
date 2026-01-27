@@ -34,8 +34,9 @@
             window.hlc_element_observer = new MutationObserver(() => {
                 const el = document.querySelector(selector);
                 if (el) {
-                    resolve();
                     window.hlc_element_observer.disconnect(); 
+                    window.hlc_element_observer = null;
+                    resolve();
                 }
             });
 
