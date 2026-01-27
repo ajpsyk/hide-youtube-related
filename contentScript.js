@@ -6,7 +6,7 @@
 
     chrome.storage.onChanged.addListener(async (changes, namespace) => {
         if (namespace === "local" && changes.relatedHidden) {
-            updateRelated(changes.relatedHidden.newValue, true);
+            updateSecondary(changes.relatedHidden.newValue, true);
         }
     });
 
@@ -81,15 +81,15 @@
     const updatePageState = () => {
         chrome.storage.local.get("relatedHidden", (data) => {
             const relatedHidden = data.relatedHidden ?? false;
-            updateRelated(relatedHidden, false);
+            updateSecondary(relatedHidden, false);
         });
     }
 
     const buttonClickHandler = () => {
-        updateRelated(null, false);
+        updateSecondary(null, false);
     }
 
-    const updateRelated = (relatedHidden, isSyncUpdate) => {
+    const updateSecondary = (relatedHidden, isSyncUpdate) => {
         const related = document.getElementById("related");
         const isHidden = relatedHidden ?? !related.hidden;
         
@@ -97,7 +97,8 @@
         related.hidden = isHidden;
 
         const playListHasItems = document.querySelector("#playlist").querySelector("#items").hasChildNodes();
-        if (!playListHasItems) document.querySelector("#secondary").hidden = isHidden;
+        const secondary = document.querySelector("ytd-watch-flexy #secondary");
+        !playListHasItems && related.hidden ? secondary.hidden = true : secondary.hidden = false;
         
         
         updateButtonIcon(isHidden);
