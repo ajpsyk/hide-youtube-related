@@ -1,6 +1,6 @@
 # Hide YouTube Related Column
 
-A lightweight Chrome Extension built with Manifest V3 that adds a native-feeling toggle button to the YouTube sidebar.
+A lightweight Chrome Extension built with Manifest V3 that adds a native-feeling toggle button to the YouTube masthead.
 It allows users to hide the "Related Videos" section for a distraction-free experience.
 
 ## Features
